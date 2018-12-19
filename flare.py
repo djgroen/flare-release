@@ -1,8 +1,6 @@
-from datamanager import handle_refugee_data
-from datamanager import DataTable #DataTable.subtract_dates()
 from flee import InputGeography
+from flare import Ecosystem
 import numpy as np
-import outputanalysis.analysis as a
 import sys
 
 def AddInitialRefugees(e, d, loc):
@@ -25,11 +23,13 @@ if __name__ == "__main__":
 
     ig = InputGeography.InputGeography()
 
-    ig.ReadLocationsFromCSV("test_data/test_input_csv/locations.csv")
+    ig.ReadLocationsFromCSV("test_input_csv/locations.csv")
 
-    ig.ReadLinksFromCSV("test_data/test_input_csv/routes.csv")
+    ig.ReadLinksFromCSV("test_input_csv/routes.csv")
 
-    e,lm = ig.StoreInputGeographyInEcosystem(e)
+    e = Ecosystem.Ecosystem()
+
+    lm = e.StoreInputGeographyInEcosystem(ig)
 
     #print("Network data loaded")
 
@@ -39,12 +39,12 @@ if __name__ == "__main__":
 
         e.evolve()
 
-        for i in camp_locations:
-            errors += [a.rel_error(lm[i].numAgents, loc_data[j])]
-            abs_errors += [a.abs_error(lm[i].numAgents, loc_data[j])]
-
-            j += 1
-
         output = "%s" % t
+
+        for l in e.locations:
+            if l.flare:
+                output +=", 1"
+            else: 
+                output +=", 0"
 
         print(output)

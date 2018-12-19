@@ -1,8 +1,10 @@
+import random
+
 
 class Ruleset:
     def __init__(self):
         self.default_chance = 0.0
-        self.adjacency_chance = [0.0, 0.05, 0.1, 0.15, 0.2, 0.25]
+        self.adjacency_chance = [0.0, 0.01, 0.02, 0.03, 0.04, 0.05]
 
     def doesFlareStartHere(self, adjacent_flares):
         flare_chance = self.default_chance
@@ -23,14 +25,14 @@ class Ruleset:
 
 
 class Location:
-    def __init__(self, name, pop, country):
+    def __init__(self, name, pop, country, flare):
         self.pop = 0
         self.name = name
         self.country = country
         self.links = []
 
-        self.flare = False
-        self.last_flare = False
+        self.flare = flare
+        self.last_flare = flare
 
     def evolve(self, r):
         """
@@ -41,12 +43,12 @@ class Location:
         else:
             adjacent_flares = 0
             for l in self.links:
-                if l.endpoint.last_flare:
+                if l.endpoint.last_flare and l.endpoint.country == self.country:
                     adjacent_flares += 1
             self.flare = r.doesFlareStartHere(adjacent_flares)
 
 class Link:
-    def __init__(self, endpoint, distance)
+    def __init__(self, endpoint, distance):
         self.endpoint = endpoint
         self.distance = float(distance)
 
@@ -59,21 +61,21 @@ class Ecosystem:
         self.closures = []
         self.r = Ruleset()
 
-    def evolve():
+    def evolve(self):
         for l in self.locations:
-            l.evolve()
+            l.evolve(self.r)
 
         for l in self.locations:
             l.last_flare = l.flare
 
-    def addLocation(self, name, pop=0, country=""):
-        l = Location(name, pop, country)
+    def addLocation(self, name, pop=0, country="", flare=False):
+        l = Location(name, pop, country, flare)
         self.locations.append(l)
         self.locationNames.append(name)
 
     def linkUp(self, endpoint1, endpoint2, distance=1.0):
-    """ Creates a link between two endpoint locations
-    """
+        """ Creates a link between two endpoint locations
+        """
         endpoint1_index = -1
         endpoint2_index = -1
         for i in range(0, len(self.locationNames)):
@@ -109,9 +111,12 @@ class Ecosystem:
                 l[7] = "unknown"
 
             movechance = l[4]
+            flare = False
+            if "conflict" in movechance:
+                flare = True
 
             lm[l[0]] = self.addLocation(
-                l[0], movechance=movechance, pop=int(l[1]), country=l[7])
+                l[0], pop=int(l[1]), country=l[7], flare=flare)
 
         for l in ig.links:
             if (len(l) > 3):
@@ -123,9 +128,6 @@ class Ecosystem:
                     self.linkUp(l[0], l[1], int(l[2]))
             else:
                 self.linkUp(l[0], l[1], int(l[2]))
-
-        for l in self.closures:
-            self.closures.append([l[0], l[1], l[2], int(l[3]), int(l[4])])
 
         return lm
 
