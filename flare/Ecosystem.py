@@ -2,16 +2,25 @@
 class Ruleset:
     def __init__(self):
         self.default_chance = 0.0
-        self.adjacency_chance = [0.0,0.05,0.1,0.15,0.2]
+        self.adjacency_chance = [0.0, 0.05, 0.1, 0.15, 0.2, 0.25]
 
-    def doesFlareStartHere(adjacent_flares):
+    def doesFlareStartHere(self, adjacent_flares):
         flare_chance = self.default_chance
         if adjacent_flares > len(self.adjacency_chance):
             flare_chance += self.adjacency_chance[-1]
         else:
             flare_chance += self.adjacency_chance[adjacent_flares]
 
-        
+        outcome = random.random()
+        if outcome < flare_chance:
+            return True
+        else:
+            return False
+
+    def doesFlareContinue(self):
+        return True
+
+
 
 class Location:
     def __init__(self, name, pop, country):
@@ -21,17 +30,18 @@ class Location:
         self.links = []
 
         self.flare = False
+        self.last_flare = False
 
     def evolve(self, r):
         """
         r = Ruleset.
         """
         if self.flare:
-            pass
+            self.flare = r.doesFlareContinue()
         else:
             adjacent_flares = 0
             for l in self.links:
-                if l.endpoint.flare:
+                if l.endpoint.last_flare:
                     adjacent_flares += 1
             self.flare = r.doesFlareStartHere(adjacent_flares)
 
@@ -47,6 +57,14 @@ class Ecosystem:
         self.locationNames = []
         self.time = 0
         self.closures = []
+        self.r = Ruleset()
+
+    def evolve():
+        for l in self.locations:
+            l.evolve()
+
+        for l in self.locations:
+            l.last_flare = l.flare
 
     def addLocation(self, name, pop=0, country=""):
         l = Location(name, pop, country)
