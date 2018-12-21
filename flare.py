@@ -33,7 +33,15 @@ if __name__ == "__main__":
 
     #print("Network data loaded")
 
-    output_header_string = "Day,"
+    file = open("flare-out.csv","w")
+
+    output_header_string = "#Day,"
+
+    for l in e.locations:
+        output_header_string += " %s," % (l.name)
+    
+    output_header_string += "\n"
+    file.write(output_header_string)
 
     for t in range(0,end_time):
 
@@ -47,4 +55,7 @@ if __name__ == "__main__":
             else: 
                 output +=", 0"
 
-        print(output)
+        output += "\n"
+        file.write(output)
+
+    file.close()
