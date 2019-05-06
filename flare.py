@@ -21,11 +21,18 @@ if __name__ == "__main__":
         if (sys.argv[1]).isnumeric():
             end_time = int(sys.argv[1])
 
+    if len(sys.argv)>2:
+        input_dir = sys.argv[2]
+    else:
+        input_dir = "test_input_csv"
+
+
+
     ig = InputGeography.InputGeography()
 
-    ig.ReadLocationsFromCSV("test_input_csv/locations.csv")
+    ig.ReadLocationsFromCSV("%s/locations.csv" % input_dir)
 
-    ig.ReadLinksFromCSV("test_input_csv/routes.csv")
+    ig.ReadLinksFromCSV("%s/routes.csv" % input_dir)
 
     e = Ecosystem.Ecosystem()
 
