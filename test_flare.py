@@ -3,16 +3,6 @@ from flare import Ecosystem
 import numpy as np
 import sys
 
-def AddInitialRefugees(e, d, loc):
-    """ Add the initial refugees to a location, using the location name"""
-    num_refugees = int(d.get_field(loc.name, 0, FullInterpolation=True))
-    for i in range(0, num_refugees):
-        e.addAgent(location=loc)
-
-def date_to_sim_days(date):
-    return DataTable.subtract_dates(date,"2010-01-01")
-
-
 if __name__ == "__main__":
 
     end_time = 100
@@ -58,9 +48,9 @@ if __name__ == "__main__":
 
         for l in e.locations:
             if l.flare:
-                output +=", 1"
+                output +=",1"
             else: 
-                output +=", 0"
+                output +=",0"
 
         output += "\n"
         file.write(output)
