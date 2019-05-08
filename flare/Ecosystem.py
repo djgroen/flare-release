@@ -1,10 +1,11 @@
 import random
+import sys
 
 
 class Ruleset:
     def __init__(self):
         self.default_chance = 0.0
-        self.adjacency_chance = [0.0, 0.01, 0.02, 0.03, 0.04, 0.05]
+        self.adjacency_chance = [0.0, 0.005, 0.01, 0.015, 0.02, 0.025]
 
     def doesFlareStartHere(self, adjacent_flares):
         flare_chance = self.default_chance
@@ -70,6 +71,7 @@ class Ecosystem:
 
     def addLocation(self, name, pop=0, country="", flare=False):
         l = Location(name, pop, country, flare)
+        print(name, pop, country, flare, file=sys.stderr)
         self.locations.append(l)
         self.locationNames.append(name)
 
@@ -112,7 +114,7 @@ class Ecosystem:
 
             movechance = l[4]
             flare = False
-            if "conflict" in movechance:
+            if "conflict" in movechance and int(l[5])==0:
                 flare = True
 
             lm[l[0]] = self.addLocation(
