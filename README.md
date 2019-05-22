@@ -5,6 +5,8 @@ Flare is a simple propagation code. It is used to model the gradual geographical
 
 Flare is installed simply by copying it to your favorite directory, or by using `git clone`.
 
+Flare has one dependency, which is the Flee code. This code can be accessed at http://www.github.com/djgroen/flee-release.
+
 ## Testing
 Simply type `python3 test_flare.py`. This will run Flare with a default ruleset and the following input files:
 * `test_input_csv/locations.csv` for location data.
